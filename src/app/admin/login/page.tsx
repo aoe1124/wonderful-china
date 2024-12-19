@@ -17,11 +17,13 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      console.log('尝试登录:', { username, password });
       const result = await signIn('credentials', {
         username,
         password,
         redirect: false,
       });
+      console.log('登录结果:', result);
 
       if (result?.error) {
         setError(result.error);
@@ -30,6 +32,7 @@ export default function LoginPage() {
         router.refresh();
       }
     } catch (err) {
+      console.error('登录错误:', err);
       setError('登录失败，请稍后重试');
     } finally {
       setIsLoading(false);

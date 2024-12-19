@@ -1,40 +1,50 @@
-import type { Metadata } from "next";
-import { Noto_Sans_SC } from "next/font/google";
-import "./globals.css";
+'use client';
 
-const notoSans = Noto_Sans_SC({
-  variable: "--font-noto-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  preload: true,
-});
+import './globals.css';
+import { useEffect, useState } from 'react';
+import { Providers } from './providers';
 
-export const metadata: Metadata = {
-  title: "中国文化之美 - 中国文化网站精选集",
-  description: "发现和探索优质的中国文化网站资源，带您领略中国文化之美",
-  keywords: "中国文化,文化网站,中国传统文化,文化导航,文化资源",
-  authors: [{ name: "WonderfulChina Team" }],
-  viewport: "width=device-width, initial-scale=1",
-  robots: "index, follow",
-  openGraph: {
-    title: "中国文化之美 - 中国文化网站精选集",
-    description: "发现和探索优质的中国文化网站资源，带您领略中国文化之美",
-    url: "https://wonderchina.win",
-    siteName: "中国文化之美",
-    locale: "zh_CN",
-    type: "website",
-  },
-};
+interface SystemSettings {
+  siteName: string;
+  siteDescription: string;
+  siteLogo: string;
+  favicon: string;
+  metaKeywords: string;
+  metaDescription: string;
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const [settings, setSettings] = useState<SystemSettings>({
+    siteName: '美丽中国',
+    siteDescription: '发现中国之美，探索旅游胜地',
+    siteLogo: '',
+    favicon: '',
+    metaKeywords: '中国旅游,景点导航,旅游攻略',
+    metaDescription: '发现中国之美，探索旅游胜地。为您提供最全面的中国旅游景点导航。',
+  });
+
+  useEffect(() => {
+    // 从localStorage加载设置
+    const savedSettings = localStorage.getItem('wonderchina_settings');
+    if (savedSettings) {
+      setSettings(JSON.parse(savedSettings));
+    }
+  }, []);
+
   return (
-    <html lang="zh-CN">
-      <body className={`${notoSans.variable} font-sans bg-secondary text-primary antialiased`}>
-        {children}
+    <html lang="zh">
+      <head>
+        <title>{settings.siteName}</title>
+        <meta name="description" content={settings.metaDescription} />
+        <meta name="keywords" content={settings.metaKeywords} />
+        {settings.favicon && <link rel="icon" href={settings.favicon} />}
+      </head>
+      <body>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
