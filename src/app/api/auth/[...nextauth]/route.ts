@@ -1,7 +1,11 @@
-import NextAuth, { AuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { kv } from '@vercel/kv';
+import bcrypt from 'bcryptjs';
 
-export const authOptions: AuthOptions = {
+export const runtime = 'edge';
+
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -10,41 +14,54 @@ export const authOptions: AuthOptions = {
         password: { label: "密码", type: "password" }
       },
       async authorize(credentials) {
-        // 简单的内存验证
-        if (credentials?.username === 'admin' && credentials?.password === 'admin123') {
-          return {
-            id: '1',
-            name: 'admin',
-            email: 'admin@example.com',
-          };
+        if (!credentials?.username || !credentials?.password) {
+          throw new Error('请输入用户名和密码');
         }
-        throw new Error('用户名或密码错误');
+
+        // 从 KV 存储获取用户信息
+        const user = await kv.hgetall(`user:${credentials.username}`);
+        
+        if (!user) {
+          throw new Error('用户不存在');
+        }
+
+        // 验证密码
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        
+        if (!isValid) {
+          throw new Error('密码错误');
+        }
+
+        return {
+          id: user.username,
+          name: user.username,
+          email: user.email,
+          role: user.role,
+        };
       }
     })
   ],
-  pages: {
-    signIn: '/admin/login',
-  },
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24小时
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  pages: {
+    signIn: '/admin/login',
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id;
+      if (session?.user) {
+        session.user.role = token.role;
       }
       return session;
     }
   }
-};
+});
 
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST } 
+export { handler as GET, handler as POST }; 
