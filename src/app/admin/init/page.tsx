@@ -27,7 +27,7 @@ export default function InitPage() {
       setTimeout(() => {
         router.push('/admin/login');
       }, 2000);
-    } catch (err) {
+    } catch (_) {
       setMessage('初始化失败，请重试');
     } finally {
       setIsLoading(false);
