@@ -2,7 +2,6 @@ export interface Category {
   id: string;
   name: string;
   description: string;
-  icon?: string;
   order: number;
 }
 
@@ -12,6 +11,17 @@ export interface Website {
   url: string;
   description: string;
   categoryId: string;
-  icon?: string;
   order: number;
+  icon?: string;
+  createTime: number;
+  updateTime: number;
+}
+
+export interface Settings {
+  siteName: string;
+  siteDescription: string;
+  siteLogo: string;
+  favicon: string;
+  metaKeywords: string;
+  metaDescription: string;
 } 
