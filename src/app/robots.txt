@@ -1,0 +1,10 @@
+# *表示所有搜索引擎
+User-agent: *
+# 允许访问所有页面
+Allow: /
+
+# 禁止访问管理后台
+Disallow: /admin/
+
+# 网站地图地址
+Sitemap: https://wonderchina.win/sitemap.xml 

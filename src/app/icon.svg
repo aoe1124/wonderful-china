@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- 背景圆形 -->
+  <circle cx="256" cy="256" r="256" fill="#E9DCC9"/>
+  <!-- 中国传统窗格图案 -->
+  <path d="M128 128h256v256h-256z" fill="none" stroke="#8B4513" stroke-width="32"/>
+  <path d="M256 128v256M128 256h256" stroke="#8B4513" stroke-width="32"/>
+  <!-- 装饰性圆点 -->
+  <circle cx="256" cy="256" r="24" fill="#C41E3A"/>
+  <circle cx="128" cy="128" r="16" fill="#8B4513"/>
+  <circle cx="384" cy="128" r="16" fill="#8B4513"/>
+  <circle cx="128" cy="384" r="16" fill="#8B4513"/>
+  <circle cx="384" cy="384" r="16" fill="#8B4513"/>
+</svg> 
